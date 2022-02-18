@@ -14,14 +14,27 @@ contract SocailNetwork {
         address author; //sender
     }
 
+    event PostCreated(
+        uint256 id,
+        string content,
+        uint256 tipAmount,
+        address author
+    );
+
     constructor() public {
         name = "My First NetWork";
     }
 
     function createPost(string memory _content) public {
+        require(bytes(_content).length > 0); //validation rules
+
         PostCount++;
 
         posts[PostCount] = Post(PostCount, _content, 0, msg.sender); //msg.sender is like a global object that truffle support for finding the sender of the or address
+
+        //trigger events - to track the value inside the struct
+
+        emit PostCreated(PostCount, _content, 0, msg.sender);
     }
 }
 

@@ -39,6 +39,14 @@ contract('SocialNetwork', (accounts) => {
       // console.log(post_count);
       assert.equal(post_count, 1);
 
+      const event = result.logs[0].args;
+
+      assert.equal(event.content, 'Hello workd');
+
+
+       await socialnetwork.createPost('', { from: accounts[0] }).should.be.rejected; 
+
+       
 
     });
   });
