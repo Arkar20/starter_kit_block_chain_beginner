@@ -11,14 +11,20 @@ contract SocailNetwork {
         uint256 id;
         string content;
         uint256 tipAmount;
-        address author; //sender
+        address payable author; //sender
     }
 
     event PostCreated(
         uint256 id,
         string content,
         uint256 tipAmount,
-        address author
+        address payable author
+    );
+    event PostTipped(
+        uint256 id,
+        string content,
+        uint256 tipAmount,
+        address payable author
     );
 
     constructor() public {
@@ -35,6 +41,24 @@ contract SocailNetwork {
         //trigger events - to track the value inside the struct
 
         emit PostCreated(PostCount, _content, 0, msg.sender);
+    }
+
+    function tipCreate(uint256 _id) public payable {
+        //payable to allow the function to pay actually
+        //fetch the post
+        Post memory _post = posts[_id];
+        //fetch the author
+        address payable _author = _post.author;
+        //paid the author
+        address(_author).transfer(msg.value);
+
+        //increment the tip amount
+        _post.tipAmount = _post.tipAmount + msg.value;
+
+        //update the post
+        posts[_id] = _post;
+        //trigger the event
+        emit PostTipped(_id, _post.content, _post.tipAmount, _author);
     }
 }
 
