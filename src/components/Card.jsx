@@ -1,7 +1,8 @@
 import Identicon from 'react-identicons';
 
 import React from "react";
-const Card = ({ post }) => {
+const Card = ({ post, tipPost }) => {
+  
   return (  
     <>
       <div className="card m-2" style={{maxWidth: '30rem'}}>
@@ -16,10 +17,10 @@ const Card = ({ post }) => {
       
           <p className="card-text">{post.content}</p>
           
-          <form action="" >
-            <button className="btn  float-left">Curent Tip Amount - </button>
-            <button className="btn btn-primary float-right">Tip ETH 1</button>
-          </form>
+          <div  className='card-footer'>
+            <p className="card-link   ">Curent Tip Amount - {window.web3.utils.fromWei(post.tipAmount.toString(),'Ether')} </p>
+            <button className="btn btn-primary card-link" onClick={()=>tipPost(post.id)}>Tip ETH 1</button>
+          </div>
           </div>
 </div>
     </>

@@ -5,6 +5,7 @@ import Card from './Card';
 import './App.css';
 import SocialNetwork from '../abis/SocailNetwork.json'
 import CreatePost from './CreatePost';
+import { toWei } from 'web3-utils';
 class App extends Component {
 
    async componentWillMount() {
@@ -48,16 +49,13 @@ class App extends Component {
       
       console.log(this.state.postCount);
 
-      for (var i = 1; i <= postCounts; i++){
+      for (let i = 1; i <= postCounts; i++){
         const post = await socialNetwork.methods.posts(i).call();
       //call method do the read fun and send method write fun on the blockchain according to web3 doc
-        
-        
-        
-        
-        
+  
         this.setState({posts:[...this.state.posts,post]});
       }
+      this.setState({ posts: this.state.posts.sort((a, b) => { return b.tipAmount - a.tipAmount })});
 
 
       // for (var i = 1; i < postCounts; i++)
@@ -80,20 +78,21 @@ class App extends Component {
 
   createPost = (content) => {
 
-    console.log('whatever you typed', content);
-    
-    // this.setState({
-    //   loading: true
-    // });
 
-    this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account }) 
+    this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account })
       .once('receipt', (receipt) => {
-          this.setState({
-            loading: false
-          });
-      })
+        console.log(receipt);
+        this.setState({
+          loading: false
+        });
+      });
 
 
+  }
+
+  tipPost = (id) => {
+    const tipAmount= window.web3.utils.toWei('0.1',"Ether")
+    this.state.socialNetwork.methods.tipCreate(id).send({from:this.state.account,value:tipAmount});
   }
 
   constructor(props) {
@@ -111,7 +110,7 @@ class App extends Component {
   
   render() {
     // console.log(this.state.posts);
-    console.log(this.state.account);
+    // console.log(this.state.account);
 
 
     return (
@@ -134,7 +133,7 @@ class App extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center gap-2">
               {
-                this.state.posts.map(post => <Card post={post} key={post.id}/>)
+                this.state.posts.map(post => <Card post={post} key={post.id} tipPost={this.tipPost} />)
               }
             </main>
           </div>
