@@ -16,8 +16,9 @@ const Card = ({ post }) => {
       
           <p className="card-text">{post.content}</p>
           
-          <form action="">
-            <button className="btn btn-primary">Go somewhere</button>
+          <form action="" >
+            <button className="btn  float-left">Curent Tip Amount - </button>
+            <button className="btn btn-primary float-right">Tip ETH 1</button>
           </form>
           </div>
 </div>

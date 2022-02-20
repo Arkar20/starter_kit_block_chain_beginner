@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import Card from './Card';
 import './App.css';
 import SocialNetwork from '../abis/SocailNetwork.json'
-
+import CreatePost from './CreatePost';
 class App extends Component {
 
    async componentWillMount() {
@@ -50,12 +50,16 @@ class App extends Component {
 
       for (var i = 1; i <= postCounts; i++){
         const post = await socialNetwork.methods.posts(i).call();
-        console.log(post);
+      //call method do the read fun and send method write fun on the blockchain according to web3 doc
+        
+        
+        
+        
+        
         this.setState({posts:[...this.state.posts,post]});
       }
 
 
-      //call method do the read fun and send method write fun
       // for (var i = 1; i < postCounts; i++)
       // {
 
@@ -74,6 +78,24 @@ class App extends Component {
     
   }
 
+  createPost = (content) => {
+
+    console.log('whatever you typed', content);
+    
+    // this.setState({
+    //   loading: true
+    // });
+
+    this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account }) 
+      .once('receipt', (receipt) => {
+          this.setState({
+            loading: false
+          });
+      })
+
+
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -81,7 +103,7 @@ class App extends Component {
       socialNetwork: null,
       postCount: 0,
       posts: [],
-      loading: true
+      loading: true,
     };
 
     
@@ -104,7 +126,11 @@ class App extends Component {
             Dapp University
           </a>
         </nav>
+
         <div className="container-fluid mt-5">
+
+          <CreatePost createPost={this.createPost} />
+
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center gap-2">
               {
